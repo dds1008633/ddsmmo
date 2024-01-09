@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using TCMAsset.TCM_CSScripts.Tools;
 using UnityEditor;
 using UnityEngine;
 using TCMAsset.TCM_CSScripts;
+using Tools;
+
 public class ResourceManager : Singleton<ResourceManager>
 {
     protected long guid = 0;

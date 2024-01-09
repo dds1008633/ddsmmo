@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TCMAsset.TCM_CSScripts.Tools;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using Tools;
 
 public class AssetBundleManager : Singleton<AssetBundleManager>
 {

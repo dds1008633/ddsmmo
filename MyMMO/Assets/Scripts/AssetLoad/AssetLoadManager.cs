@@ -2,20 +2,17 @@
 using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using TCMAsset.TCM_CSScripts.Tools;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.U2D;
-using XLua;
 using Object = UnityEngine.Object;
+using Tools;
 
-namespace TCMAsset.TCM_CSScripts.AssetLoad
-{
-    /// <summary>
-    /// 资源加载 管理类
-    /// </summary>
-    [LuaCallCSharp]
-    public class AssetLoadManager : SingletonMono<AssetLoadManager>
+/// <summary>
+/// 资源加载 管理类
+/// </summary>
+
+public class AssetLoadManager : SingletonMono<AssetLoadManager>
     {
 
         // *资源集，从配置中解析获取
@@ -232,4 +229,4 @@ namespace TCMAsset.TCM_CSScripts.AssetLoad
         public string assetPath;
         public string assetType;
     }
-}
+

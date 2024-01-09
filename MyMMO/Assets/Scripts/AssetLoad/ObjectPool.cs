@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TCMAsset.TCM_CSScripts.Tools;
 using System;
+using Tools;
 
 public class ObjectPool:Singleton<ObjectPool>
 {
