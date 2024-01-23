@@ -14,6 +14,9 @@ public interface IUpdater
 
 }
 
+/// <summary>
+/// ÓÎÏ·¸üĞÂÆ÷
+/// </summary>
 public class GameUpdater : SingletonMono<GameUpdater>
 {
     private List<IUpdater> _updates = new List<IUpdater>();
