@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using TCMAsset.TCM_CSScripts;
 using Tools;
 
 public class ResourceManager : Singleton<ResourceManager>
@@ -66,8 +65,8 @@ public class ResourceManager : Singleton<ResourceManager>
 
     // *初始化
     public void Init(MonoBehaviour mono, Transform recycleTrs, Transform sceneTrs)
-	{
-        
+    {
+
         for (int i = 0; i < (int)LoadResPriority.RES_NUM; i++)
         {
             m_LoadingAssetList[i] = new List<AsyncLoadResParam>();
@@ -107,8 +106,8 @@ public class ResourceManager : Singleton<ResourceManager>
             return item.m_Obj as T;
         }
         T obj = null;
-		if (GameConfig.loadType == LoadType.AssetDataBase || GameConfig.loadType == LoadType.Resources)
-		{
+        if (GameConfig.loadType == LoadType.AssetDataBase || GameConfig.loadType == LoadType.Resources)
+        {
             item = AssetBundleManager.Instance.FindResourceItem(crc);
             if (item != null)
             {
@@ -130,8 +129,8 @@ public class ResourceManager : Singleton<ResourceManager>
                 obj = LoadAssetByEditor<T>(path);
             }
         }
-		else
-		{
+        else
+        {
             if (obj == null)
             {
                 item = AssetBundleManager.Instance.LoadResourceAssetBundle(crc);
@@ -149,14 +148,14 @@ public class ResourceManager : Singleton<ResourceManager>
                 }
             }
         }
-         
+
         CacheResource(path, ref item, crc, obj);
         return obj;
     }
 
     // *预加载(不需要实例化的)
     public void PreloadRes(string path)
-	{
+    {
         if (string.IsNullOrEmpty(path))
         {
             return;
@@ -168,9 +167,9 @@ public class ResourceManager : Singleton<ResourceManager>
             return;
         }
         Object obj = null;
-	
-		if (GameConfig.loadType == LoadType.AssetDataBase || GameConfig.loadType == LoadType.Resources)
-		{
+
+        if (GameConfig.loadType == LoadType.AssetDataBase || GameConfig.loadType == LoadType.Resources)
+        {
             item = AssetBundleManager.Instance.FindResourceItem(crc);
             if (item != null)
             {
@@ -190,9 +189,9 @@ public class ResourceManager : Singleton<ResourceManager>
                 item.m_Crc = crc;
                 obj = LoadAssetByEditor<Object>(path);
             }
-		}
-		else
-		{
+        }
+        else
+        {
             if (obj == null)
             {
                 item = AssetBundleManager.Instance.LoadResourceAssetBundle(crc);
@@ -209,8 +208,8 @@ public class ResourceManager : Singleton<ResourceManager>
 
                 }
             }
-        }    
-    
+        }
+
         CacheResource(path, ref item, crc, obj);
         item.m_Clear = false;
         ReleaseResource(path);
@@ -219,7 +218,7 @@ public class ResourceManager : Singleton<ResourceManager>
     // *异步加载(不需要实例化的)
     public void AsyncLoadResource(string path, OnAsyncObjFinish dealFinish, LoadResPriority priority, object param1 = null,
         object param2 = null, object param3 = null, uint crc = 0)
-	{
+    {
         if (crc == 0)
         {
             crc = Crc32.GetCrc32(path);
@@ -237,14 +236,14 @@ public class ResourceManager : Singleton<ResourceManager>
         // --判断是否加载中
         AsyncLoadResParam para = null;
         if (!m_LoadingAssetDic.TryGetValue(crc, out para) || para == null)
-		{
+        {
             para = m_AsyncLoadResParamPool.Spawn(true);
             para.m_Crc = crc;
             para.m_Path = path;
             para.m_Priority = priority;
             m_LoadingAssetDic.Add(crc, para);
             m_LoadingAssetList[(int)priority].Add(para);
-		}
+        }
         //--往回调列表里面加回调
         AsyncCallBack callBack = m_AsyncCallBackPool.Spawn(true);
         callBack.m_DealFinish = dealFinish;
@@ -259,31 +258,31 @@ public class ResourceManager : Singleton<ResourceManager>
     // *编辑器加载
     protected T LoadAssetByEditor<T>(string path) where T : UnityEngine.Object
     {
-		switch (GameConfig.loadType)
-		{
-			case LoadType.Resources:
-				return ResourcesLoadByEditor<T>(path);
+        switch (GameConfig.loadType)
+        {
+            case LoadType.Resources:
+                return ResourcesLoadByEditor<T>(path);
 
 #if UNITY_EDITOR
-			case LoadType.AssetDataBase:
-				return AssetDatabase.LoadAssetAtPath<T>(path);
+            case LoadType.AssetDataBase:
+                return AssetDatabase.LoadAssetAtPath<T>(path);
 #endif
-		}
-		Debug.LogError("加载方式出错!");
+        }
+        Debug.LogError("加载方式出错!");
         return null;
     }
 
     // *Resources加载
     private string loadPathHear = "Assets/TCMAsset/Resources/";
     protected T ResourcesLoadByEditor<T>(string path) where T : UnityEngine.Object
-	{
+    {
         var idx = path.LastIndexOf('.');
         string newPath = path.Substring(0, idx);
-        newPath= newPath.Replace(loadPathHear, "");
-        var obj= Resources.Load<T>(newPath);
+        newPath = newPath.Replace(loadPathHear, "");
+        var obj = Resources.Load<T>(newPath);
         return obj;
-	}
-    
+    }
+
 
     // *资源卸载(根据路径)（不需要实例化的资源）
     public bool ReleaseResource(string path, bool destoryObj = false)
@@ -362,15 +361,15 @@ public class ResourceManager : Singleton<ResourceManager>
 
     // *异步加载协程
     IEnumerator AsyncLoadCor()
-	{
+    {
         List<AsyncCallBack> callBackList = new List<AsyncCallBack>();
         long lastYiledTime = System.DateTime.Now.Ticks; //微秒
 
-		while (true)
-		{
+        while (true)
+        {
             bool haveYield = false;
-			for (int i = 0; i < (int)LoadResPriority.RES_NUM; i++) //--从最高级开始
-			{
+            for (int i = 0; i < (int)LoadResPriority.RES_NUM; i++) //--从最高级开始
+            {
                 List<AsyncLoadResParam> loadingList = m_LoadingAssetList[i];
                 if (loadingList.Count <= 0)
                     continue;
@@ -380,9 +379,9 @@ public class ResourceManager : Singleton<ResourceManager>
                 callBackList = loadingItem.m_CallBackList;
                 Object obj = null;
                 ResourceItem item = null;
-	
-				if (GameConfig.loadType == LoadType.AssetDataBase || GameConfig.loadType == LoadType.Resources)
-				{
+
+                if (GameConfig.loadType == LoadType.AssetDataBase || GameConfig.loadType == LoadType.Resources)
+                {
                     item = AssetBundleManager.Instance.FindResourceItem(loadingItem.m_Crc);
                     obj = LoadAssetByEditor<Object>(loadingItem.m_Path);
                     if (item == null)
@@ -393,8 +392,8 @@ public class ResourceManager : Singleton<ResourceManager>
 
                     yield return new WaitForSeconds(0.5f);
                 }
-				else
-				{
+                else
+                {
                     if (obj == null)
                     {
                         item = AssetBundleManager.Instance.LoadResourceAssetBundle(loadingItem.m_Crc);
@@ -411,20 +410,20 @@ public class ResourceManager : Singleton<ResourceManager>
                         }
                     }
                 }
-               
 
-				
+
+
                 CacheResource(loadingItem.m_Path, ref item, loadingItem.m_Crc, obj, callBackList.Count);
 
-				for (int j = 0; j < callBackList.Count; j++)
-				{
+                for (int j = 0; j < callBackList.Count; j++)
+                {
                     AsyncCallBack callBack = callBackList[j];
 
-					if (callBack != null && callBack.m_DealFinish != null) //--无需实例化的回调执行
-					{
+                    if (callBack != null && callBack.m_DealFinish != null) //--无需实例化的回调执行
+                    {
                         callBack.m_DealFinish(loadingItem.m_Path, obj, callBack.m_Param1, callBack.m_Param2, callBack.m_Parma3);
 
-					}
+                    }
 
                     if (callBack != null && callBack.m_dealObjFinsh != null && callBack.m_ResObj != null)//--需实例化的回调执行
                     {
@@ -452,7 +451,7 @@ public class ResourceManager : Singleton<ResourceManager>
                 }
 
 
-                
+
 
             }
             if (!haveYield || System.DateTime.Now.Ticks - lastYiledTime > MAXLOADRESTIME)
@@ -470,7 +469,7 @@ public class ResourceManager : Singleton<ResourceManager>
     /*-------------------------------------需要实例化的资源-------------------------------*/
 
     // *同步加载(需要实例化的)
-    public GameObject LoadInstantiateResource(string path,Transform parent=null, bool setSceneObj = false, bool bClear = true)
+    public GameObject LoadInstantiateResource(string path, Transform parent = null, bool setSceneObj = false, bool bClear = true)
     {
         uint crc = Crc32.GetCrc32(path);
         ResourceObj resourceObj = GetObjectFromPool(crc);
@@ -490,15 +489,15 @@ public class ResourceManager : Singleton<ResourceManager>
                 resourceObj.m_OfflineData = resourceObj.m_CloneObj.GetComponent<OfflineData>();
             }
         }
-		if (parent)
-		{
+        if (parent)
+        {
             resourceObj.m_CloneObj.transform.SetParent(parent, false);
-		}
-		else
-		{
+        }
+        else
+        {
             resourceObj.m_CloneObj.transform.parent = null;
         }
-	
+
         if (setSceneObj)
         {
             resourceObj.m_CloneObj.transform.SetParent(SceneTrs, false);
@@ -512,16 +511,16 @@ public class ResourceManager : Singleton<ResourceManager>
     }
 
     // *预加载(需要实例化的)
-    public void PreloadInstantiateRes(string path,Transform parent=null, int count = 1, bool clear = false)
+    public void PreloadInstantiateRes(string path, Transform parent = null, int count = 1, bool clear = false)
     {
         List<GameObject> tempGameObjectList = new List<GameObject>();
         for (int i = 0; i < count; i++)
         {
-            GameObject obj = LoadInstantiateResource(path, parent,false, bClear: clear);
+            GameObject obj = LoadInstantiateResource(path, parent, false, bClear: clear);
             tempGameObjectList.Add(obj);
         }
-		for (int i = 0; i < count; i++)
-		{
+        for (int i = 0; i < count; i++)
+        {
             GameObject obj = tempGameObjectList[i];
             ReleaseObject(obj);// --回收到对象池
             obj = null;
@@ -532,7 +531,7 @@ public class ResourceManager : Singleton<ResourceManager>
     // *异步加载(需要实例化的)
     public long AsyncInstantiateObject(string path, OnAsyncObjFinish dealFinish, LoadResPriority priority, bool setSceneObject = false, object param1 = null,
        object param2 = null, object param3 = null, bool bClear = true)
-	{
+    {
         if (string.IsNullOrEmpty(path))
         {
             return 0;
@@ -665,7 +664,7 @@ public class ResourceManager : Singleton<ResourceManager>
 
     // *异步加载封装 异步加载中间类
     protected void AsyncLoadResource(string path, ResourceObj resObj, OnAsyncGoObjFinish dealFinish, LoadResPriority priority)
-	{
+    {
         ResourceItem item = GetCacheResourceItem(resObj.m_Crc);
         if (item != null)
         {
@@ -707,9 +706,9 @@ public class ResourceManager : Singleton<ResourceManager>
             return resObj;
         }
         Object obj = null;
-	
-		if (GameConfig.loadType == LoadType.AssetDataBase || GameConfig.loadType == LoadType.Resources)
-		{
+
+        if (GameConfig.loadType == LoadType.AssetDataBase || GameConfig.loadType == LoadType.Resources)
+        {
             item = AssetBundleManager.Instance.FindResourceItem(crc);
             if (item == null)
             {
@@ -726,8 +725,8 @@ public class ResourceManager : Singleton<ResourceManager>
                 obj = LoadAssetByEditor<Object>(path);
             }
         }
-		else
-		{
+        else
+        {
             if (obj == null)
             {
                 item = AssetBundleManager.Instance.LoadResourceAssetBundle(crc);
@@ -756,7 +755,7 @@ public class ResourceManager : Singleton<ResourceManager>
 
     // *资源卸载(需要实例化的资源)
     public bool ReleaseResource(ResourceObj resObj, bool destoryObj = false)
-	{
+    {
         if (resObj == null)
         {
             return false;
@@ -842,7 +841,7 @@ public class ResourceManager : Singleton<ResourceManager>
         return null;
     }
     // *资源回收（存入对象池）(需要实例化的资源)
-    public void ReleaseObject(GameObject obj, int maxCacheCount =0, bool destoryCahe = false, bool recycleParent = true)
+    public void ReleaseObject(GameObject obj, int maxCacheCount = 0, bool destoryCahe = false, bool recycleParent = true)
     {
         if (obj == null)
         {
@@ -925,7 +924,7 @@ public class ResourceManager : Singleton<ResourceManager>
 
         return resObj == null ? false : true;
     }
-    
+
     // *清空对象池
     public void ClearPool()
     {
@@ -1001,7 +1000,7 @@ public class ResourceManager : Singleton<ResourceManager>
             if (item != null)
             {
                 item.RefCount += addrefcount;
-                item.m_LastUseTime = Time.realtimeSinceStartup;              
+                item.m_LastUseTime = Time.realtimeSinceStartup;
             }
         }
         return item;

@@ -1,5 +1,5 @@
 ﻿using System;
-using Newtonsoft.Json.Linq;
+//using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,25 +25,25 @@ public class AssetLoadManager : SingletonMono<AssetLoadManager>
 #if UNITY_EDITOR
             gameObject.name = "AssetLoadManager";
 #endif
-            GameRoot.AddToGameRoot(gameObject);
+            //GameRoot.AddToGameRoot(gameObject);
         }
 
 
-        public  IEnumerator Init()
-        {
+        //public  IEnumerator Init()
+        //{
 
-            var recycleTrs = new GameObject();
-            recycleTrs.transform.SetParent(transform);
-            recycleTrs.transform.position = Vector3.zero;
-            recycleTrs.gameObject.SetActive(false);
+        //    var recycleTrs = new GameObject();
+        //    recycleTrs.transform.SetParent(transform);
+        //    recycleTrs.transform.position = Vector3.zero;
+        //    recycleTrs.gameObject.SetActive(false);
 
-            var sceneTrs = new GameObject();
-            sceneTrs.transform.SetParent(transform);
-            sceneTrs.transform.position = Vector3.zero;            
-            ResourceManager.Instance.Init(this,recycleTrs.transform,sceneTrs.transform);
+        //    var sceneTrs = new GameObject();
+        //    sceneTrs.transform.SetParent(transform);
+        //    sceneTrs.transform.position = Vector3.zero;            
+        //    ResourceManager.Instance.Init(this,recycleTrs.transform,sceneTrs.transform);
             
-            yield return StartCoroutine(LoadConfigAsync());
-        }
+        //    yield return StartCoroutine(LoadConfigAsync());
+        //}
 
         public GameObject LoadGameObject(string prefabName,Transform parent=null)
         {
@@ -170,54 +170,54 @@ public class AssetLoadManager : SingletonMono<AssetLoadManager>
 
 
 
-        private IEnumerator LoadConfigAsync()
-        {
-            yield return StartCoroutine(RefreshAssetPathConfig());
-        }
+        //private IEnumerator LoadConfigAsync()
+        //{
+        //    //yield return StartCoroutine(RefreshAssetPathConfig());
+        //}
 
         // *加载预制体配置表
-        private IEnumerator RefreshAssetPathConfig()
-        {
-            UnityWebRequest request = TextAssetUtil.GetTextAssetRequest("AssetPathConfig.json");
-            yield return request.SendWebRequest();
-            string pathConfigText = request.downloadHandler.text;
+        //private IEnumerator RefreshAssetPathConfig()
+        //{
+        //UnityWebRequest request = textassetutil.gettextassetrequest("assetpathconfig.json");
+        //yield return request.SendWebRequest();
+        //string pathConfigText = request.downloadHandler.text;
 
-            JObject jsonData = JObject.Parse(pathConfigText);
-            JArray assetConfigList = (JArray)jsonData["AssetPathConfig"];
+        //JObject jsonData = JObject.Parse(pathConfigText);
+        //JArray assetConfigList = (JArray)jsonData["AssetPathConfig"];
 
-            foreach (JToken item in assetConfigList)
-            {
-                JToken assetConfig = item;
-                string assetName = ParseString(assetConfig["AssetName"]);
-                if (!string.IsNullOrEmpty(assetName))
-                {
-                    MyAssetInfo assetInfo = null;
-                    if (!assetInfoDic.TryGetValue(assetName, out assetInfo))
-                    {
-                        assetInfo = new MyAssetInfo();
-                        assetInfoDic.Add(assetName, assetInfo);
-                    }
+        //foreach (JToken item in assetConfigList)
+        //{
+        //    JToken assetConfig = item;
+        //    string assetName = ParseString(assetConfig["AssetName"]);
+        //    if (!string.IsNullOrEmpty(assetName))
+        //    {
+        //        MyAssetInfo assetInfo = null;
+        //        if (!assetInfoDic.TryGetValue(assetName, out assetInfo))
+        //        {
+        //            assetInfo = new MyAssetInfo();
+        //            assetInfoDic.Add(assetName, assetInfo);
+        //        }
 
-                    assetInfo.assetName = ParseString(assetConfig["AssetName"]);
-                    assetInfo.assetResourcesPath = ParseString(assetConfig["AssetPath"]);
-                    assetInfo.assetType = ParseString(assetConfig["AssetType"]);
-                }
-            }
-        }
-
-
-        private string ParseString(JToken json)
-        {
-            if (json == null)
-                return "";
-            string res = json.ToString();
-            return res;
-        }
-
-
-
-
+        //        assetInfo.assetName = ParseString(assetConfig["AssetName"]);
+        //        assetInfo.assetResourcesPath = ParseString(assetConfig["AssetPath"]);
+        //        assetInfo.assetType = ParseString(assetConfig["AssetType"]);
+        //    }
+        //}
     }
+
+
+        //private string ParseString(JToken json)
+        //{
+        //    if (json == null)
+        //        return "";
+        //    string res = json.ToString();
+        //    return res;
+        //}
+
+
+
+
+    //}
 
 
 
